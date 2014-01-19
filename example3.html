@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<body>
+	<script>
+		function powTwo(base, exp) {
+		    //check if base and exp are typeof Number
+		   if (exp === 0) { 
+		   	return 1;
+		   }
+		   var expVal = recPowTwo(base, Math.abs(exp));
+		   if (exp < 0) { return 1.0 / expVal; }
+		   return expVal;
+
+		}
+
+		//3
+
+		//2
+
+		//1
+
+		function recPowTwo(base, exp) {
+		    if (exp == 1) { return base;}
+		    else {
+		        return base * recPowTwo(base, exp - 1);
+		    }     
+		}
+
+
+		alert(powTwo(2, 5));
+		alert(powTwo(3, -4));
+	</script>
+</body>
+</html>

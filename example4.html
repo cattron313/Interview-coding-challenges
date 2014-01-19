@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<title>Motif Investing Challenge #1</title>
+	</head>
+	<body>
+		<script type="text/javascript">
+			/* This function takes an object with properties feature and privacyLevel.  Privacy level should be a number and feature should be an array of strings.  It also takes an optional container to place the table in.  The default container is the body.
+			*/
+
+			function createTable(data, $container) {
+				if (typeof(data) !== "object" || !data.feature ||
+					!data.feature instanceof Array || !data.privacyLevel ||
+					typeof(data.privacyLevel) !== "number" ||
+					data.privacyLevel % 1 !== 0) { return; } //enforcement of expected input
+
+				var elements = createTableStructure(data.feature.length, data.privacyLevel + 1, data.feature, $container);
+				attachEventHandlers(elements[1], elements[2]);
+				return elements[0];
+
+				function createTableStructure(numRows, numCols, labels, $container) {
+					var $wrap = $('<div><table></table><button>Report</button></div>');
+					var $table = $wrap.find("table");
+					for (var i = 0; i < numRows; i++) {
+						var $row = $('<tr></tr>');
+						if (typeof(labels[i]) != 'string') { alert("You should pass in an array of strings for labels."); } //will alert user for each label that is not a string, enforcement of expected input
+						for (var j = 0; j < numCols; j++) {
+							$row.append('<td>' + (j === 0 ? labels[i] : '<input type="checkbox" />') + '</td>');
+						}
+						$table.append($row);
+					}
+					if (!$container) { $container = $("body"); }
+					$container.append($wrap);
+					return [$wrap, $table, $("button", $wrap)];
+				}
+
+
+				function attachEventHandlers($table, $button) {
+					$table.click(function(e) {
+						var target = e.target;
+						if (e.target.nodeName === "INPUT") {
+							var $checkbox = $(e.target);
+							if ($checkbox.is(':checked')) { //at this point, event that changes checkbox state has already been triggered
+								checkBoxesToTheRight($checkbox);
+							} else {
+								uncheckBoxesToTheLeft($checkbox);
+							}	
+						}
+					});
+
+					$button.click(function() {
+						$table.find("tr").each(function() {
+							var label = $(this).find("td:first-of-type").text();
+							var level = $(this).find("input:checked").length;
+							console.log("Privacy Level: " + label + " - " + level);
+						});
+					});
+				}
+
+				function checkBoxesToTheRight($checkbox) {
+					$checkbox.parent().nextAll().children().prop("checked", true);
+				}
+
+				function uncheckBoxesToTheLeft($checkbox) {
+					$checkbox.parent().prevAll().children().prop("checked", false);
+				}
+			}			
+
+			//test cases
+			createTable({
+				privacyLevel: 3,
+				feature: ["apple", "ball", "cat"]
+			});
+
+			createTable({
+				privacyLevel: 10,
+				feature: ["apple", "ball", "cat", "dog", "egg", "fish", "ice"]
+			});
+
+		</script>
+	</body>
+</html>
+

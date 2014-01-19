@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+    <head></head>
+    <body>
+        <script>
+            function f(s) {
+                rf(s, 0, null, false);    
+            }       
+
+            function rf(s, index, subs) {
+
+                /* This is the bottom out case.
+                    You have reached the end of the string input.
+                 */
+                if (index === s.length) {
+                    return null;    
+                }
+
+                var ch = s.charAt(index);
+                
+                if (ch === "{") {
+                    var subs = "";
+                    var numOfChars = rf(s, index + 1, subs);
+                    if (numOfChars === null) {
+
+                    } else if(s.charAt(index - 1) === "{") {
+                        /*  This is the case where you are recursively returning and
+                            have a "{" proceeded by a "{".  Example: {a{{bc}kl}f}
+                            You need to skip over the part you just checked to see if 
+                            there are any more letters to add to the substring.
+                        */
+                        return rf(s, index + numOfChars + 1, subs) + numOfChars + 1;
+                    } else if(index + numOfChars + 1 < s.length && s.charAt(index + numOfChars + 1) === "{") {
+                        /*  Edge Case:
+                            This is the case where you have reached "}" at the top
+                            level but there is another set of brackets following the current set.
+                        */
+                        return rf(s, index + numOfChars + 1, subs) + numOfChars + 1; 
+                    } else {
+                        /*  Here you are totalling the number of characters you need to 
+                            jump over to skip any sub-brackets.
+                        */
+                        return numOfChars + 1;
+                    }
+                } else if (ch === "}") {
+                    console.log(subs);
+                    return 1;
+                } else {
+                    subs += ch;
+                    var numOfChars = rf(s, index + 1, subs);
+                    if (numOfChars === null) {
+
+                    } else if(s.charAt(index + 1) === "{") {
+                        /*  This is the case where you are recursively returning and
+                            have a non-bracket character followed by a "{".  Example: 
+                            {a{bc{de}}f}
+                            You need to skip over the part you just checked to see if 
+                            there are any more letters to add to the substring.
+                        */
+                        return rf(s, index + numOfChars + 1, subs) + numOfChars + 1; 
+                    } else {
+                        /*  Here you are totalling the number of characters you need
+                            jump over to skip any sub-brackets.
+                        */
+                        return numOfChars + 1;   
+                    }
+                }
+            }
+            
+            f("{a{{bc}kl}f}");
+            console.log("------");
+            f("{a{{bc{de}{ij}}kl}f}{gh}");
+        </script>
+    </body>
+</html>

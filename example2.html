@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head></head>
+    <body>
+        <script>
+            //This script will log to the console the normalized string, assumes file path strings are strings and correctly formatted file paths
+
+            function normalizeFilePathString(str) {
+                var result = "";
+                for(var i = 0; i < str.length; i++) {
+                    if (str.charAt(i) === ".") {
+
+                        //The following if test assumes that strings are either single or double component.  Anything else would be considered malformed file string
+                        switch(findDotComponentType(str, i)) {
+                            case 1: //single dot component
+                                i++;
+                                break;
+
+                            case 2: //double dot component
+
+                                var startIndexOfParentDirectory = result.substr(0, result.length - 1).lastIndexOf("/");
+
+                                result = result.substring(0,startIndexOfParentDirectory + 1); //don't want to remove the beginning slash in front of the parent directory
+
+                                i += 2;
+                                break;
+
+                            default: //malformed string
+                        }
+                    } else {
+                        result += str.charAt(i);  
+                    }  
+                }
+                    
+                console.log(result);
+                return result;
+            }
+
+            function findDotComponentType(str, i) {
+                //Single dot components are followed by a slash while double dot components are followed by a another dot.
+                if (str.charAt(i + 1) === ".") { return 2; }
+                if (str.charAt(i + 1) === "/") { return 1; }
+                return -1;//malformed string
+            }
+
+
+            //Tests for the method normalizeFilePathString
+            normalizeFilePathString('foo/./bar');
+            normalizeFilePathString('foo/bar/../baz');
+            normalizeFilePathString('/foo/bar/../../bap/./');
+
+        </script>
+    </body>
+</html>

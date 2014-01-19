@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<title>Motif Investing Challenge #2</title>
+	</head>
+	<body>
+		<script type="text/javascript">
+		/* To make the method drawSquares more flexible, I would take a hex number or rgb values as inputs.  I would also make the ending color (currently hard coded as white) an input.  I think having a flexible end color makes this function a lot cooler and artistic because you can create many different gradients.  I think also specifiying a basic shape (i.e., circle, triangle, and square) also increases the cool factor of this function.
+		*/
+			function drawSquares(colorValue, stepWidth, $container) {
+				/* This function takes two mandatory numbers in as input.  Color value is an int between [0, 14].  The optional input is a container to append the squares.
+				*/
+				if (typeof(colorValue) !== "number" || typeof(stepWidth) !== "number" || colorValue < 0 || colorValue > 14 || colorValue % 1 !== 0) { return; }
+
+				var numSq = 16 - colorValue,
+					$wrap = $('<div></div>'),
+					hexColorValue = convertColorValueToHex(colorValue),
+					$outerContainer = $wrap,
+					width = (numSq - 1) * (2 * stepWidth); //width of the most inner square is 0 so start with one less than the number of squares, when calculating the width of the outer most square
+
+				for (var i = 0; i < numSq; i++) {
+					var $sq = $('<div></div>');
+					$sq.css({
+						padding: stepWidth + "px",
+						backgroundColor: "#" + hexColorValue,
+						width: width + "px"
+					});
+					$outerContainer = $sq.appendTo($outerContainer);
+					hexColorValue = incrementHexColorValue(hexColorValue, "111111");
+					width -= stepWidth * 2;
+				}
+
+				if (!$container) { $container = $("body"); }
+				return $wrap.appendTo($container);
+
+				function incrementHexColorValue(hcv, incrementHexStr) {
+					var result = (parseInt(hcv, 16) + parseInt(incrementHexStr, 16)).toString(16);
+					while (result.length < 6) { //the hex string needs additional filler zeros
+						result = "0" + result;
+					}
+					return result;
+				}
+
+				function convertColorValueToHex(cv) {
+					var result;
+					switch(cv) {
+						case 0:
+							result = "000000";
+							break;
+						case 1:
+							result = "111111";
+							break;
+						case 2:
+							result = "222222";
+							break;
+						case 3:
+							result = "333333";
+							break;
+						case 4:
+							result = "444444";
+							break;
+						case 5:
+							result = "555555";
+							break;
+						case 6:
+							result = "666666";
+							break;
+						case 7:
+							result = "777777";
+							break;
+						case 8:
+							result = "888888";
+							break;
+						case 9:
+							result = "999999";
+							break;
+						case 10:
+							result = "aaaaaa";
+							break;
+						case 11:
+							result = "bbbbbb";
+							break;
+						case 12:
+							result = "cccccc";
+							break;
+						case 13:
+							result = "dddddd";
+							break;
+						case 14:
+							result = "eeeeee";
+							break;
+					}
+					return result;
+				}
+			}
+
+			//test cases
+			drawSquares(0,8);
+			drawSquares(10, 25);
+		</script>
+	</body>
+</html>
