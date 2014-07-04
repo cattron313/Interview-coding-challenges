@@ -4,13 +4,14 @@ require_relative "rank.rb"
 describe RankCalculator, "#rank_word" do
 	it "returns rank number for a correctly formatted word" do
 		rankMachine = RankCalculator.new
-		r1 = rankMachine.rank_word("ABAB")
+		r1 = rankMachine.rank_word "ABAB"
 		r2 = rankMachine.rank_word "AaAb"
 		r3 = rankMachine.rank_word "baaa"
 		r4 = rankMachine.rank_word "CART"
 		r5 = rankMachine.rank_word "QUESTION"
 		r6 = rankMachine.rank_word "BOOKKEEPER"
 		r7 = rankMachine.rank_word "NONINTUITIVENESS"
+		r8 = rankMachine.rank_word "ZABCDEFGHIJKLMNOPQSR"
     	
     	r1.should eq(2)
     	r2.should eq(1)
@@ -19,6 +20,7 @@ describe RankCalculator, "#rank_word" do
     	r5.should eq(24572)
     	r6.should eq(10743)
     	r7.should eq(8222334634)
+    	r8.should eq(2311256907767808002)
   	end
 end
 
