@@ -30,4 +30,11 @@ describe Integer, "#factorial" do
 	end
 end
 
-		
+describe String, "#number_of_unique_permutations" do
+	it "returns the number of unique permutations of a string" do
+		"AAAB".number_of_unique_permutations.should eq(4)
+		"BAAA".number_of_unique_permutations.should eq(4)
+		"ABCD".number_of_unique_permutations.should eq(24)
+		"ABAB".number_of_unique_permutations.should eq(6)
+	end
+end		
