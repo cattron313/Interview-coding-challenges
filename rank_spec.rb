@@ -1,24 +1,26 @@
 # Unit tests for rank.rb (rspec)
 require_relative "rank.rb"
 
-# describe Rank, "#rankWord" do
-# 	it "returns rank number for a correctly formatted word" do
-# 		rankMachine = Rank.new
-# 		r1 = rankMachine.rank_word "ABAB"
-# 		r2 = rankMachine.rank_word "AaAb"
-# 		r3 = rankMachine.rank_word "baaa"
-# 		r4 = rankMachine.rank_word "QUESTION"
-# 		r5 = rankMachine.rank_word "BOOKKEEPER"
-# 		r6 = rankMachine.rank_word "NONINTUITIVENESS"
+describe RankCalculator, "#rank_word" do
+	it "returns rank number for a correctly formatted word" do
+		rankMachine = RankCalculator.new
+		r1 = rankMachine.rank_word("ABAB")
+		r2 = rankMachine.rank_word "AaAb"
+		r3 = rankMachine.rank_word "baaa"
+		r4 = rankMachine.rank_word "CART"
+		r5 = rankMachine.rank_word "QUESTION"
+		r6 = rankMachine.rank_word "BOOKKEEPER"
+		r7 = rankMachine.rank_word "NONINTUITIVENESS"
     	
-#     	r1.should.equal(2)
-#     	r2.should.equal(1)
-#     	r3.should.equal(4)
-#     	r4.should.equal(24572)
-#     	r5.should.equal(10743)
-#     	r6.should.equal(8222334634)
-#   	end
-# end
+    	r1.should eq(2)
+    	r2.should eq(1)
+    	r3.should eq(4)
+    	r4.should eq(7)
+    	r5.should eq(24572)
+    	r6.should eq(10743)
+    	r7.should eq(8222334634)
+  	end
+end
 
 describe Integer, "#factorial" do
 	it "returns the factorial of a number" do
