@@ -1,14 +1,16 @@
-def find_open_restaurants(filename, datetime)
-	if !File.file?(filename)
-	end
+require "date"
 
-	restaurant_list = parse_csv_file(filename) #parse file into data structure
+def find_open_restaurants(filename, datetime)
+	raise "Invalid input.  Please enter in a filename and a datetime object" unless File.file?(filename) && datetime.is_a?(DateTime)
+
+	restaurant_list = parse_csv_file(filename) # parse file into data structure
 	open_restaurants = []
 	restaurant_list.each do |restaurant| # loop through restaurants
-		if datetime.to_time >= restaurant[hours][datetime.cwday][:open] &&
-			datetime.to_time < restaurant[hours][datetime.cwday][:close]
+		if restaurant[:hours][datetime.cwday] &&
+			datetime.total_seconds_from_midnight >= restaurant[:hours][datetime.cwday][:open] &&
+			datetime.total_seconds_from_midnight < restaurant[:hours][datetime.cwday][:close]
 			# store is open
-			open_restaurants << restaurant[name]
+			open_restaurants << restaurant[:name]
 		end
 	end
 	return open_restaurants
@@ -34,23 +36,24 @@ def extract_and_parse_hours(str)
 		index_of_first_digit = hours_info.index(/[0-9]/)
 
 		time_range = hours_info[index_of_first_digit..hours_info.length-1].split("-")
-		days = hours_info[0..index_of_first_digit - 1]
+		days = hours_info[0..index_of_first_digit - 1].split(",")
 
-		days_index = 0
-		days.each_char do |c|
-			if c == "-"
+		days.each do |day_info|
+			first_day, last_day = 0
+			if index_of_dash = day_info.index("-")
 				# loop through days range and add times
-				first_day = numerical_key_for_day(days[days_index - 3, 3]) # first day of range is 3 characters before "-"
-				last_day = numerical_key_for_day(days[days_index + 1, 3]) # last day of range is the next 3 characters after "-"
-				(first_day..last_day).each do |n|
-					result[n] = {open: parse_time(time_range[0].strip), close: parse_time(time_range[1].strip)}
-				end
-			elsif c == ","
+				first_day = numerical_key_for_day(day_info[index_of_dash - 3, 3]) # first day of range is 3 characters before "-"
+				last_day = numerical_key_for_day(day_info[index_of_dash + 1, 3])# last day of range is the next 3 characters after "-"
+			else					
 				# add time for a single day
-				day = numerical_key_for_day(days[days_index + 2, 3]) # day starts 2 characters after the ","
-				result[day] = {open: parse_time(time_range[0].strip), close: parse_time(time_range[1].strip)}
+				first_day = numerical_key_for_day(day_info.strip)
+				last_day = first_day
 			end
-			days_index += 1
+			while first_day <= last_day
+				result[first_day] = {open: parse_time(time_range[0].strip), close: parse_time(time_range[1].strip)}
+				result[first_day][:close] += 24 * 60 * 60 if result[first_day][:close] < result[first_day][:open] # if the closed time is smaller than the open time, then we need to increment the closed time by 1 day
+				first_day += 1
+			end
 		end
 	end
 	return result
@@ -88,4 +91,11 @@ def parse_time(time_str)
 		hr = 0
 	end
 	return hr * 60 * 60 + min * 60
+end
+
+class DateTime < Date
+	def total_seconds_from_midnight
+		# returns just the total seconds from midnight (doesn't include any fractional seconds)
+		return self.hour * 60 * 60 + self.min * 60 + self.sec
+	end
 end
