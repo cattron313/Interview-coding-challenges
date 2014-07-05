@@ -1,3 +1,4 @@
+# Load file into irb and you should be good to go!
 require "date"
 
 def find_open_restaurants(filename, datetime)
@@ -35,7 +36,7 @@ def extract_and_parse_hours(str)
 	str.split('/').each do |hours_info|
 		index_of_first_digit = hours_info.index(/[0-9]/)
 
-		time_range = hours_info[index_of_first_digit..hours_info.length-1].split("-")
+		time_range = hours_info[index_of_first_digit..hours_info.length-1].split("-") # open and close times
 		days = hours_info[0..index_of_first_digit - 1].split(",")
 
 		days.each do |day_info|
